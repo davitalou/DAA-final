@@ -1,6 +1,7 @@
 import networkx as nx
-
-def color_backtracking(G, max_colors):
+import itertools
+# --- 1. BackTracking ---
+def color_backtracking(G):
     color = {}
     nodes = list(G.nodes())
 
@@ -10,42 +11,50 @@ def color_backtracking(G, max_colors):
                 return False
         return True
 
-    def backtrack(index):
+    def backtrack(index, max_colors):
         if index == len(nodes):
             return True
         node = nodes[index]
         for c in range(1, max_colors + 1):
             if is_valid(node, c):
                 color[node] = c
-                if backtrack(index + 1):
+                if backtrack(index + 1, max_colors):
                     return True
                 del color[node]
         return False
 
-    if backtrack(0):
-        return color
-    else:
-        return None
+    n = len(nodes)
+    for max_colors in range(1, n + 1):  # Thử từ 1 màu, tăng dần
+        color.clear()
+        if backtrack(0, max_colors):
+            return color, max_colors
+
+    return None, n  # Không tìm thấy (hầu như không xảy ra)
 
 
-# --- 3. Greedy coloring (mặc định theo thứ tự node) ---
-def color_greedy(graph):
-    color = {}
-    
-    for node in graph:
-        # Lấy màu của các đỉnh kề
-        neighbor_colors = {color[neighbor] for neighbor in graph[node] if neighbor in color}
-        
-        # Tìm màu nhỏ nhất chưa được dùng
-        for c in range(1, len(graph) + 1):
-            if c not in neighbor_colors:
-                color[node] = c
-                break
-                
-    return color
+# --- 2. BruteForce ---
+def is_valid_coloring(graph, coloring):
+    """Kiểm tra coloring có hợp lệ không."""
+    for u in graph.nodes():
+        for v in graph.neighbors(u):
+            if coloring[u] == coloring[v]:
+                return False
+    return True
+
+def brute_force_coloring(graph):
+    """Brute-force tô màu đồ thị."""
+    nodes = list(graph.nodes())
+    n = len(nodes)
+    for num_colors in range(1, n + 1):
+        for coloring_tuple in itertools.product(range(num_colors), repeat=n):
+            coloring = {nodes[i]: coloring_tuple[i] for i in range(n)}
+            if is_valid_coloring(graph, coloring):
+                return coloring, num_colors
+    return None, n
 
 
-# --- 4. Welsh-Powell ---
+
+# --- 3. Welsh-Powell ---
 def color_welsh_powell(G):
     nodes = sorted(G.nodes(), key=lambda x: G.degree[x], reverse=True)
     color = {}
@@ -59,7 +68,7 @@ def color_welsh_powell(G):
     return color
 
 
-# --- 5. DSATUR ---
+# --- 4. DSATUR ---
 def color_dsatur(G):
     color = {}
     saturation = {node: 0 for node in G.nodes()}

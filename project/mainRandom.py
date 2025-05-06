@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import random
 import Algorithm
+import numpy as np
 
 # Danh sách mở rộng đã đề cập
 sizes = [
@@ -14,6 +15,16 @@ sizes = [
 ]
 
 #     (6000, 110000), (6500, 123000), (7000, 137000)
+
+nodes, edges = zip(*sizes)
+
+# Nội suy (interpolation) để có khoảng 150 phần tử
+num_points = 150
+new_nodes = np.linspace(min(nodes), max(nodes), num=num_points, dtype=int)
+new_edges = np.interp(new_nodes, nodes, edges).astype(int)
+
+# Tạo lại danh sách sizes mới
+sizes = list(zip(new_nodes, new_edges))
 
 num_trials = 20
 
