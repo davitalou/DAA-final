@@ -10,8 +10,8 @@ sizes = [
     (100, 600), (200, 1200), (300, 1800), (400, 2800), (500, 3500),
     (600, 5000), (700, 6200), (800, 7500), (900, 9000), (1000, 10500),
     (1200, 13000), (1500, 17000), (1800, 21000), (2000, 25000),
-    (2300, 29000), (2600, 34000), (3000, 42000), (3500, 51000),
-    (4000, 62000), (4500, 73000), (5000, 85000), (5500, 97000),
+    # (2300, 29000), (2600, 34000), (3000, 42000), (3500, 51000),
+    # (4000, 62000), (4500, 73000), (5000, 85000), (5500, 97000),
 ]
 
 #     (6000, 110000), (6500, 123000), (7000, 137000)
@@ -19,7 +19,7 @@ sizes = [
 nodes, edges = zip(*sizes)
 
 # Nội suy (interpolation) để có khoảng 150 phần tử
-num_points = 150
+num_points = 70
 new_nodes = np.linspace(min(nodes), max(nodes), num=num_points, dtype=int)
 new_edges = np.interp(new_nodes, nodes, edges).astype(int)
 
@@ -29,7 +29,7 @@ sizes = list(zip(new_nodes, new_edges))
 num_trials = 20
 
 # Tạo các dict để lưu thời gian và số màu trung bình
-algorithms = ["Greedy", "Welsh-Powell", "DSATUR"]
+algorithms = ["Welsh-Powell", "DSATUR"]
 time_results = {algo: [] for algo in algorithms}
 color_counts = {algo: [] for algo in algorithms}
 
@@ -53,13 +53,6 @@ for n, m in sizes:
 
     for _ in range(num_trials):
         G = generate_random_graph(n, m)
-
-        # --- Greedy ---
-        start = time.time()
-        result = Algorithm.color_greedy(G)
-        elapsed = (time.time() - start) * 1000
-        trial_times["Greedy"].append(elapsed)
-        trial_colors["Greedy"].append(len(set(result.values())))
 
         # --- Welsh-Powell ---
         start = time.time()
@@ -86,7 +79,7 @@ fig, ax1 = plt.subplots(figsize=(12, 5))
 
 # Biểu đồ thời gian (y1)
 for algo in algorithms:
-    ax1.plot(x_labels, time_results[algo], marker='o', label=f"{algo} (Thời gian)", linestyle='-', color=f"C{algorithms.index(algo)}")
+    ax1.plot(x_labels, time_results[algo], label=f"{algo} (Thời gian)", linestyle='-', color=f"C{algorithms.index(algo)}")
 ax1.set_xlabel("Số đỉnh")
 ax1.set_ylabel("Thời gian trung bình (ms)", color="black")
 ax1.tick_params(axis='y', labelcolor="black")
@@ -94,7 +87,7 @@ ax1.tick_params(axis='y', labelcolor="black")
 # Tạo trục phụ (y2) cho số màu
 ax2 = ax1.twinx()
 for algo in algorithms:
-    ax2.plot(x_labels, color_counts[algo], marker='s', label=f"{algo} (Số màu)", linestyle='--', color=f"C{algorithms.index(algo)}")
+    ax2.plot(x_labels, color_counts[algo], label=f"{algo} (Số màu)", linestyle='--', color=f"C{algorithms.index(algo)}")
 ax2.set_ylabel("Số màu trung bình", color="black")
 ax2.tick_params(axis='y', labelcolor="black")
 

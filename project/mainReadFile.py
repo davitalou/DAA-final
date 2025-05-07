@@ -45,24 +45,12 @@ G = read_col_file(select_file_via_gui())
 # print(f"Số đỉnh: {G.number_of_nodes()}")
 # print(f"Số cạnh: {G.number_of_edges()}")
 
-# #A. Backtracking (cẩn thận! thử với đồ thị nhỏ hơn trước)
+# Welsh-Powell
 start = time.time()*1000
-result_back, num_colors = Algorithm.color_backtracking(G)
-end1 = time.time()
-print(f"Backtracking: {num_colors}, thời gian: {end1 - start}")
-
-# B. BruteForce
-
-brute_result, num_colors = Algorithm.brute_force_coloring(G)
+wp_result = Algorithm.color_welsh_powell(G)
+end1 = time.time()*1000
+print(f"Welsh-Powell - Số màu sử dụng: {len(set(wp_result.values()))}, thời gian: {end1 - start}ms")
+# DSATUR
+dsatur_result = Algorithm.color_dsatur(G)
 end2 = time.time()*1000
-print(f"BruteForce: {num_colors}, thời gian: {end2 - start}ms")
-
-# C. Welsh-Powell
-# wp_result = Algorithm.color_welsh_powell(G)
-# end3 = time.time()*1000
-# print(f"Welsh-Powell - Số màu sử dụng: {len(set(wp_result.values()))}, thời gian: {end3 - start}ms")
-
-# # D. DSATUR
-# dsatur_result = Algorithm.color_dsatur(G)
-# end4 = time.time()*1000
-# print(f"DSATUR - Số màu sử dụng: {len(set(dsatur_result.values()))}, thời gian: {end4 - end3}ms")
+print(f"DSATUR - Số màu sử dụng: {len(set(dsatur_result.values()))}, thời gian: {end2 - end1}ms")
