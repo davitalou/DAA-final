@@ -50,11 +50,11 @@ for n in sizes:
 
 # Vẽ biểu đồ
 plt.figure(figsize=(10, 5))
-plt.plot(sizes, backtracking_times, marker='o', label='Backtracking')
+plt.plot(sizes, backtracking_times, label='Backtracking')
 
 # Vẽ brute-force chỉ ở phần có dữ liệu
 sizes_brute = sizes[:8]  # từ 4 đến 11 (8 phần tử)
-plt.plot(sizes_brute, brute_force_times[:8], marker='s', label='Brute-force', linestyle='--')
+plt.plot(sizes_brute, brute_force_times[:8], label='Brute-force', linestyle='--')
 
 plt.gca().xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
 plt.xlabel('Số đỉnh')
